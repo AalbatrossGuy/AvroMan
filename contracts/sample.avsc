@@ -1,0 +1,12 @@
+{
+    "type": "record",
+    "name": "UserCreated",
+    "namespace": "com.example.events",
+    "fields": [
+      {"name": "id", "type": "string"},
+      {"name": "email", "type": "string"},
+      {"name": "age", "type": ["null", "int"], "default": null},
+      {"name": "tags", "type": {"type": "array", "items": "string"}, "default": []},
+      {"name": "source", "type": {"type": "enum", "name": "Source", "symbols": ["web", "mobile", "api"]}},
+    ]
+}
