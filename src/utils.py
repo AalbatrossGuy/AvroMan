@@ -45,7 +45,7 @@ def _make_choice(
 ) -> bool:
     return rng.random() < probability
 
-def _special_payload(
+def identify_logical_type(
     contract: Contract,
     rng: random.Random
 ) -> Any:
