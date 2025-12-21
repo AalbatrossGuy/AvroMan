@@ -30,16 +30,8 @@ def is_record_valid(
     except Exception:
         return False
 
-def _generate_random_string(
-    rng: random.Random,
-    minimum_length: int = 4,
-    maximum_length: int = 20
-) -> str:
-    randnum = rng.randint(minimum_length, maximum_length)
-    alphanum = string.ascii_letters + string.digits
-    return "".join(rng.choice(alphanum) for _ in range(randnum))
 
-def _make_choice(
+def _probabilistic_choice(
     rng: random.Random,
     probability: float = 0.3
 ) -> bool:
