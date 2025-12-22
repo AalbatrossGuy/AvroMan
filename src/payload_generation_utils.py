@@ -5,9 +5,7 @@ import base64
 import random
 import string
 from typing import Any
-from utils import _probabilistic_choice
 from datetime import date, datetime, timezone
-from generate_payload import generate_valid_payload
 
 def _rand_bytes_to_b64(
     rng: random.Random,
@@ -81,6 +79,7 @@ def _choose_union_branching(
     branches: list[Any],
     rng: random.Random
 ) -> Any:
+    from src.utils import _probabilistic_choice
     empty_branches = [branch for branch in branches if _is_branch_empty(branch)]
     non_empty_branches = [branch for branch in branches if branch not in empty_branches]
 
@@ -110,7 +109,7 @@ def _generate_primitive_data_type(
         return rng.randint(-1000, 5000)
     if contract == "long":
         return rng.randint(-10000, 200000)
-    if contract in ["float", "dobule"]:
+    if contract in ["float", "double"]:
         return rng.uniform(-1000.0, 5000.0)
     if contract == "string":
         return _generate_random_string(rng=rng, minimum_length=5)
