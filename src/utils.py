@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import json
 import random
-import string
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List
 from fastavro import parse_schema
 from fastavro.types import Schema
 from fastavro.validation import validate
 from datetime import date, datetime, timezone
+from schema_builders import AvroContract
+from payload_generation_utils import _is_union_nullable
 
 Contract = Dict[str, Any]
 
@@ -58,3 +59,42 @@ def identify_logical_type(
         return millisecond
 
     return None
+
+
+def _field_names(contract: AvroContract) -> List[str]:
+    return [
+        field["name"] for field in contract.get("fields", [])
+    ]
+
+
+def _field_names_required(contract: AvroContract) -> List[str]:
+    required_field_names: List[str] = []
+    for field in contract.get("fields", []):
+        if not _is_union_nullable(field["type"]):
+            required_field_names.append(field["name"])
+    return required_field_names
+
+
+def _fields_enum(contract: AvroContract) -> List[Dict[str, Any]]:
+    return [
+        field for field in contract.get("fields", []) 
+        if isinstance(field.get("type"), dict) and field["type"].get("type") =="enum"
+    ]
+
+def _drop_required_field(
+    inject_invalid: Dict[str, Any],
+    contract: AvroContract,
+    rng: random.Random
+) -> Dict[str, Any]:
+    required_field = _field_names_required(contract)
+    if required_field:
+        inject_invalid.pop(rng.choice(required_field), None)
+        return inject_invalid
+
+    field_names = _field_names(contract)
+    if field_names:
+        inject_invalid.pop(rng.choice(field_names), None)
+
+    return inject_invalid
+
+

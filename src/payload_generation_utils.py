@@ -4,9 +4,10 @@ from __future__ import annotations
 import base64
 import random
 import string
-from typing import Any, Dict
+from typing import Any
 from utils import _probabilistic_choice
 from datetime import date, datetime, timezone
+from generate_payload import generate_valid_payload
 
 def _rand_bytes_to_b64(
     rng: random.Random,
@@ -88,6 +89,15 @@ def _choose_union_branching(
     return rng.choice(non_empty_branches if non_empty_branches else branches)
 
 
+
+def _is_union_nullable(field_contract: Any) -> bool:
+    check: bool = isinstance(field_contract, list) and any(
+        branch == "null" or (isinstance(branch, dict) and branch.get("type") == "null")
+        for branch in field_contract
+    )
+    return check
+
+
 def _generate_primitive_data_type(
     contract: str,
     rng: random.Random
@@ -109,3 +119,40 @@ def _generate_primitive_data_type(
 
     return _generate_random_string(rng)
 
+def _generate_wrong_data_type(
+    contract: Any,
+    rng: random.Random
+) -> Any:
+    if isinstance(contract, list):
+        return {
+            "invalid": "data_type"
+        }
+
+    if isinstance(contract, str):
+        if contract in ("int", "long", "float", "double"):
+            return "InvalidNumber"
+        if contract == "boolean":
+            return "InvalidBoolean"
+        if contract == "string":
+            return 1337
+        return {
+            "invalid": True
+        }
+
+    if isinstance(contract, dict):
+        data_type = contract.get("type")
+        if data_type == "array":
+            return "InvalidArray"
+        if data_type == "map":
+            return ["Invalid", "Map"]
+        if data_type == "record":
+            return "InvalidRecord"
+        if data_type == "enum":
+            return "INVALID_SYMBOL"
+        return {
+            "invalid": "data_type"
+        }
+
+    return {
+        "invalid": "dict"
+    }
