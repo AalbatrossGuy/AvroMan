@@ -1,1 +1,4 @@
 fastavro
+fastapi
+click
+rich
