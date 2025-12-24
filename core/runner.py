@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-from os import stat
 import time
-from fastapi import status
 import requests
 from typing import Any, Dict
 from dataclasses import dataclass
@@ -65,7 +63,7 @@ def parse_runner_response(
         return expected, False
 
     if is_valid:
-        expected = "pass"
+        expected = "pass" if is_valid else "fail"
         ok = (200 <= status_code < 300) if expect_2xx_for_valid else (status_code < 400)
         return expected, ok
 
