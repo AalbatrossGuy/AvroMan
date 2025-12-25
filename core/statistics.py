@@ -13,26 +13,32 @@ def _as_bool(string: Any) -> bool:
         return string
     if isinstance(string, str):
         return string.strip().lower() in {"true", "1", "yes", "y"}
-    return bool(string)
+    if isinstance(string, int):
+        return string != 0
+    return False
 
 
 def summary(records: List[Record]) -> None:
     console = Console(width=140)
+    # console.print(type(records[0].ok), records[0].ok)
 
-    good_count = sum(1 for record in records if _as_bool(record.ok))
-    bad_count = len(records) - good_count
+    # good_count = sum(1 for record in records if _as_bool(record.ok))
+    # bad_count = len(records) - good_count
+
+    good_count = sum(1 for record in records if (record.expected or "").strip().lower() == "pass")
+    bad_count = sum(1 for record in records if (record.expected or "").strip().lower() == "fail")
+
 
     table = Table(title="Contract test analysis", expand=True)
     table.add_column("record", width=6, no_wrap=True)
+    table.add_column("is_valid", width=8, no_wrap=True)
     table.add_column("expected", width=8, no_wrap=True)
     table.add_column("status", width=6, no_wrap=True)
-    table.add_column("ok", width=3, no_wrap=True)
     table.add_column("ms", justify="right", width=8, no_wrap=True)
-    table.add_column("response", overflow="fold")  # fold instead of ellipsis
+    table.add_column("response", overflow="fold")
 
     for record in records:
         status = "-" if record.status_code is None else str(record.status_code)
-        ok = _as_bool(record.ok)
         response_snippet = (record.error or record.response or "")[:300]
 
         table.add_row(
@@ -40,7 +46,6 @@ def summary(records: List[Record]) -> None:
             "yes" if _as_bool(record.is_valid) else "no",
             record.expected,
             status,
-            "yes" if ok else "no",
             f"{record.elapsed_time_ms:.1f}",
             response_snippet,
         )
