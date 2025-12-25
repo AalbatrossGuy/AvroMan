@@ -29,13 +29,13 @@ def summary(records: List[Record]) -> None:
     bad_count = sum(1 for record in records if (record.expected or "").strip().lower() == "fail")
 
 
-    table = Table(title="Contract test analysis", expand=True)
+    table = Table(title="Schema Test Result", expand=True)
     table.add_column("record", width=6, no_wrap=True)
     table.add_column("is_valid", width=8, no_wrap=True)
-    table.add_column("expected", width=8, no_wrap=True)
-    table.add_column("status", width=6, no_wrap=True)
-    table.add_column("ms", justify="right", width=8, no_wrap=True)
-    table.add_column("response", overflow="fold")
+    table.add_column("pass/fail", width=9, no_wrap=True)
+    table.add_column("status code", width=11, no_wrap=True)
+    table.add_column("time (ms)", justify="right", width=10, no_wrap=True)
+    table.add_column("api response", overflow="fold")
 
     for record in records:
         status = "-" if record.status_code is None else str(record.status_code)
