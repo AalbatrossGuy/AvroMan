@@ -105,16 +105,16 @@ python -m src.avroman run \
 │ V001   │ yes      │ pass      │ 200         │        0.8 │ {"OK":true}                                                                   │
 │ V002   │ yes      │ pass      │ 200         │        0.7 │ {"OK":true}                                                                   │
 │ V003   │ yes      │ pass      │ 200         │        0.8 │ {"OK":true}                                                                   │
-│ I026   │ no       │ fail      │ 422         │        0.5 │ {"detail":{"error":"invalid_email","message":"Email is not                    │
+│ I000   │ no       │ fail      │ 422         │        0.5 │ {"detail":{"error":"invalid_email","message":"Email is not                    │
 │        │          │           │             │            │ valid","field":"email"}}                                                      │
-│ I027   │ no       │ fail      │ 422         │        0.6 │ {"detail":{"error":"invalid enum","message":"Schema validation                │
+│ I001   │ no       │ fail      │ 422         │        0.6 │ {"detail":{"error":"invalid enum","message":"Schema validation                │
 │        │          │           │             │            │ failed","details":"[\n  \"com.example.events.UserCreated.source is            │
 │        │          │           │             │            │ <INVALID_SYMBOLS> of type <class 'str'> expected {'type': 'enum', 'name':     │
 │        │          │           │             │            │ 'com.example.events.Source', 'symbols': ['web', 'mobile', 'api']}\"\n]"}}     │
-│ I028   │ no       │ fail      │ 422         │        0.6 │ {"detail":{"error":"data type mismatch","message":"Schema validation          │
+│ I002   │ no       │ fail      │ 422         │        0.6 │ {"detail":{"error":"data type mismatch","message":"Schema validation          │
 │        │          │           │             │            │ failed","details":"[\n  \"Field(com.example.events.UserCreated.id) is None    │
 │        │          │           │             │            │ expected string\"\n]"}}                                                       │
-│ I029   │ no       │ fail      │ 422         │        0.6 │ {"detail":{"error":"data type mismatch","message":"Schema validation          │
+│ I003   │ no       │ fail      │ 422         │        0.6 │ {"detail":{"error":"data type mismatch","message":"Schema validation          │
 │        │          │           │             │            │ failed","details":"[\n  \"Field(com.example.events.UserCreated.tags) is None  │
 │        │          │           │             │            │ expected {'type': 'array', 'items': 'string'}\"\n]"}}                         │
 └────────┴──────────┴───────────┴─────────────┴────────────┴───────────────────────────────────────────────────────────────────────────────┘
