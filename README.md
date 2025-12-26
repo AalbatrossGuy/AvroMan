@@ -69,7 +69,55 @@ python -m src.avroman run \
   --schema contracts/sample.avsc \
   --url http://127.0.0.1:8080/events/usercreated \
   --method POST \
+  --headers "{\"Authorization\":\"Bearer TOKEN\"}" \
   --n-valid 30 \
   --n-invalid 30 \
 --seed 19
+```
+## CLI Arguments
+- `--schema`: path to schema file.
+
+- `--url`: custom endpoint to test.
+
+- `--method`: HTTP method [default: `POST`].
+
+- `--n-valid`: number of valid payloads to generate.
+
+- `--n-invalid`: number of invalid payloads to generate.
+
+- `--seed`: RNG seed for reproducible test data.
+
+- `--headers`: JSON string for headers.
+
+- `--timeout`: request timeout in seconds.
+
+- `--valid-accept-3xx`: treat any `< 400` response as acceptable for valid payloads
+
+- `--fail-on-any/--no-fail-on-any`: exit non-zero if any case behaves unexpectedly
+
+## Example Output
+```
+                                                             Schema Test Result
+┏━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ record ┃ is_valid ┃ pass/fail ┃ status code ┃  time (ms) ┃ api response                                                                  ┃
+┡━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ V000   │ yes      │ pass      │ 200         │        1.8 │ {"OK":true}                                                                   │
+│ V001   │ yes      │ pass      │ 200         │        0.8 │ {"OK":true}                                                                   │
+│ V002   │ yes      │ pass      │ 200         │        0.7 │ {"OK":true}                                                                   │
+│ V003   │ yes      │ pass      │ 200         │        0.8 │ {"OK":true}                                                                   │
+│ I026   │ no       │ fail      │ 422         │        0.5 │ {"detail":{"error":"invalid_email","message":"Email is not                    │
+│        │          │           │             │            │ valid","field":"email"}}                                                      │
+│ I027   │ no       │ fail      │ 422         │        0.6 │ {"detail":{"error":"invalid enum","message":"Schema validation                │
+│        │          │           │             │            │ failed","details":"[\n  \"com.example.events.UserCreated.source is            │
+│        │          │           │             │            │ <INVALID_SYMBOLS> of type <class 'str'> expected {'type': 'enum', 'name':     │
+│        │          │           │             │            │ 'com.example.events.Source', 'symbols': ['web', 'mobile', 'api']}\"\n]"}}     │
+│ I028   │ no       │ fail      │ 422         │        0.6 │ {"detail":{"error":"data type mismatch","message":"Schema validation          │
+│        │          │           │             │            │ failed","details":"[\n  \"Field(com.example.events.UserCreated.id) is None    │
+│        │          │           │             │            │ expected string\"\n]"}}                                                       │
+│ I029   │ no       │ fail      │ 422         │        0.6 │ {"detail":{"error":"data type mismatch","message":"Schema validation          │
+│        │          │           │             │            │ failed","details":"[\n  \"Field(com.example.events.UserCreated.tags) is None  │
+│        │          │           │             │            │ expected {'type': 'array', 'items': 'string'}\"\n]"}}                         │
+└────────┴──────────┴───────────┴─────────────┴────────────┴───────────────────────────────────────────────────────────────────────────────┘
+Total: 8  Good: 4  Bad: 4
+
 ```
